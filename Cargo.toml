@@ -1,8 +1,12 @@
 [package]
-name = "rassert"
+name = "rassert-rs"
+description = "Simple macro for expressing Result-returning assertions."
+repository = "https://github.com/mscofield0/rassert"
+homepage = "https://github.com/mscofield0/rassert"
 version = "1.0.0"
 edition = "2021"
 license = "MIT"
+
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
