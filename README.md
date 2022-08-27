@@ -1,11 +1,11 @@
 # rassert
 
-Simple macro for expressing Result-returning assertions.
+Simple macro for expressing Result-returning assertions and notifying, hard-error assertions (useful for functions where you can't propagate an error upstream so you want to log it).
 
 ## Usage
 
 ```rust
-use rassert::rassert;
+use rassert::{rassert, rassert_notify};
 
 enum MyError {
     NotAnswerToLife,
@@ -18,6 +18,12 @@ pub fn foo(input: usize) -> Result<SomeOutput, MyError> {
 
     let output = ...;
     Ok(output)
+}
+
+pub fn bar(input: usize) {
+    rassert_notify!(1 != 1, error!("Well, that's not true."));
+    
+    println!("Hi everyone"); // Never reached since the above rassert_notify fails and returns
 }
 ```
 
