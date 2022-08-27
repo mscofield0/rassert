@@ -49,6 +49,57 @@ macro_rules! rassert_notify {
     };
 }
 
+/// Helper macro to cleanly execute an expression and continue a loop if it fails.
+///
+/// # Example
+/// ```rust
+/// use rassert_rs::rassert_notify_continue;
+///
+/// fn main() {
+///     let mut i = 1;
+///     while i != 5 {
+///         i += 1;
+///         rassert_notify_continue!(42 != 42, println!("Yikes"));
+///         // Prints 'Yikes' and continues the loop
+///     }
+/// }
+/// ```
+#[macro_export]
+macro_rules! rassert_notify_continue {
+    ($expr: expr, $notify: expr) => {
+        if !$expr {
+            $notify;
+            continue;
+        }
+    };
+}
+
+/// Helper macro to cleanly execute an expression and break a loop if it fails.
+///
+/// # Example
+/// ```rust
+/// use rassert_rs::rassert_notify_break;
+///
+/// fn main() {
+///     let mut i = 1;
+///     while i != 5 {
+///         rassert_notify_break!(42 != 42, println!("Yikes"));
+///         // Prints 'Yikes' and breaks the loop
+///         i += 1;
+///     }
+///     assert_eq!(i, 1);
+/// }
+/// ```
+#[macro_export]
+macro_rules! rassert_notify_break {
+    ($expr: expr, $notify: expr) => {
+        if !$expr {
+            $notify;
+            break;
+        }
+    };
+}
+
 #[cfg(test)]
 mod tests {
     use crate::{rassert, rassert_notify};
@@ -86,6 +137,26 @@ mod tests {
     fn check_notify() {
         let mut var = 72;
         rassert_notify!(42 != 42, var = 42);
+        assert_eq!(var, 42);
+    }
+
+    #[allow(unused_assignments)]
+    #[test]
+    fn check_notify_continue() {
+        let mut var = 72;
+        while var != 42 {
+            rassert_notify_continue!(42 != 42, var = 42);
+        }
+        assert_eq!(var, 42);
+    }
+
+    #[allow(unused_assignments)]
+    #[test]
+    fn check_notify_break() {
+        let mut var = 72;
+        loop {
+            rassert_notify_break!(42 != 42, var = 42);
+        }
         assert_eq!(var, 42);
     }
 }
